@@ -40,6 +40,10 @@ Every file is kernel-checked inside the environment of the community Lean proof 
 
 You need a built clone of `leanprover-community/riemann-hypothesis` (tested at commit `8c828ed`, Lean v4.37.0-rc1). F1: `F1-explicit/check-explicit_v1.0_11-27-2026.sh` (see its header). S2: build the ported modules with the scripts in `S2-schoenfeld-large/tools/`, then `RH_REPO=/path/to/riemann-hypothesis sh S2-schoenfeld-large/tools/lean1_v1.0_11-27-2026.sh S2-schoenfeld-large/src/SchoenfeldPort/Final.lean`. Every main theorem ends with `#print axioms`; expect `[propext, Classical.choice, Quot.sound]`.
 
+## Berry-Keating count (11-27-2026)
+
+`S1-zero-counting/BerryKeating_v1.0_11-27-2026.lean`: for every T ≥ 14, |N(T) − ((T/2π) log(T/2π) − T/2π + 7/8)| ≤ 4.5 log T + 17.1 (`berry_keating_count`), the smooth count of Berry and Keating's xp model, 7/8 term included. Plus the level density between T and T + 1 (`berry_keating_density`). Axioms: propext, Classical.choice, Quot.sound.
+
 ## Cite
 
 Rayn-McLean, T. (2026). *Schoenfeld's bounds for psi and theta from the formalized Riemann hypothesis*. Zenodo. https://doi.org/10.5281/zenodo.24606897

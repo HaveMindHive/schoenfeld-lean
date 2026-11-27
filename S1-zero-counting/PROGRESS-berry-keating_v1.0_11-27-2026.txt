@@ -1,0 +1,21 @@
+Berry-Keating smooth counting law, progress (11-27-2026). Status: DONE.
+
+File: BerryKeating_v1.0_11-27-2026.lean (imports SchoenfeldS1.C). Check: tools/lean1_v1.0_11-27-2026.sh BerryKeating_v1.0_11-27-2026.lean (about 30 s).
+No sorry, no native_decide, no new axioms. #print axioms output: berry-keating-axioms_v1.0_11-27-2026.txt
+(both main theorems: [propext, Classical.choice, Quot.sound]).
+
+Proven:
+  berry_keating_count (14 <= T):
+    |NT T - (T/(2 pi) log(T/(2 pi)) - T/(2 pi) + 7/8)| <= 4.5 log T + 17.1
+  holds at every T >= 14, ordinates included (constant unchanged from RtB).
+  berry_keating_density (14 <= T):
+    log(T/(2 pi))/(2 pi) - (9 log(T+1) + 34.2) <= NT(T+1) - NT T
+      <= log((T+1)/(2 pi))/(2 pi) + 9 log(T+1) + 34.2
+
+Route: abs_NT_sub_Mt_le (S1C) at non-ordinates; upper side for all T >= 14 is NT_le_Mt_add_RtB (S1C).
+New: lower side extended from T >= 1000 to all T > 14 (Mt_sub_RtB_le_NT_of_lt, same left-limit argument
+on the band (max(T-1,14), T]) and T = 14 (Mt_sub_RtB_le_NT_fourteen, since 14 < 2 pi e gives Mt 14 <= 7/8).
+Mt T = bkMain T is the identity log(T/(2 pi e)) = log(T/(2 pi)) - 1. Density: bkMain(T+1) - bkMain T lies
+in [log(T/2pi)/2pi, log((T+1)/2pi)/2pi] by log x <= x - 1 twice, then the count bound at T and T+1.
+
+Not done: no olean built for this file (it is a leaf; build1 expects S1<M> names). Not committed or pushed.

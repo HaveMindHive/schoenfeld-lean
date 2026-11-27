@@ -1,0 +1,7 @@
+schoenfeld-lean
+Copyright 2026 Turaq Rayn-McLean
+
+Checked inside the environment of leanprover-community/riemann-hypothesis (Apache-2.0),
+whose proof of the Riemann hypothesis is by Levent Alpöge with Claude, condensed by the Lean community.
+Builds on Tau Ceti (Apache-2.0, the Tau Ceti contributors), goldbach-lean by sthubbar (Apache-2.0)
+and PrimeNumberTheoremAnd (Apache-2.0). Ported files keep their original headers.

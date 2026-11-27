@@ -1,0 +1,10 @@
+Schoenfeld S1 (schoenfeld-s1_v1.0_11-27-2026). AI-written Lean code (Claude), 11-27-2026.
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Builds on:
+* goldbach-lean (Steve Hubbard, Apache-2.0), as ported in schoenfeld-port_v1.0_11-27-2026 (SchoenfeldPort).
+* Tau Ceti (The Tau Ceti contributors, Apache-2.0): logGamma, Stirling remainder (Nemes bound),
+  riemannZeta_lt_zero, Rectangle.
+* Mathlib (Apache-2.0), commit 31ce06ea.
+* The riemann-hypothesis-community repository: riemannHypothesis (Alpöge with Claude).
+Constants of Hasanalizade, Shen and Wong are quoted from arXiv 2107.06506 (fetched 11-27-2026).

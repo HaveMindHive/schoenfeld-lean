@@ -1,7 +1,8 @@
 /-
-Schoenfeld S1, part L (WORK IN PROGRESS, 2 elaboration defects, see PROGRESS chunk 3): a continuous
-argument of `xi` along `2 → 2 + iT → 1/2 + iT` with `Θ 0 = 0`, `Θ 2 = π + rsTheta T + π S(T)`.
-AI-written Lean code (Claude), 11-27-2026. Apache-2.0. Not delivered.
+Schoenfeld S1, part L: a continuous argument of `xi` along the path `2 → 2 + iT → 1/2 + iT` with
+`Θ 0 = 0` and `Θ 2 = π + rsTheta T + π S(T)` (`exists_arg_xi_path`).
+AI-written Lean code (Claude), 11-27-2026. Environment: the riemann-hypothesis-community repository
+(Lean v4.37.0-rc1, Mathlib 31ce06ea, Tau Ceti; RH: Alpöge with Claude). Apache-2.0.
 -/
 import SchoenfeldS1.X
 import SchoenfeldS1.D3
@@ -87,15 +88,13 @@ lemma continuousOn_argQuad (hT : 0 < T) :
 
 lemma argQuad_zero : arg (2 : ℂ) + arg (1 : ℂ) = 0 := by
   have h2 : arg (2 : ℂ) = 0 := by
-    rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num]; exact arg_ofReal_of_nonneg (by norm_num)
-  have h1 : arg (1 : ℂ) = 0 := by
-    rw [show (1 : ℂ) = ((1 : ℝ) : ℂ) by norm_num]; exact arg_ofReal_of_nonneg (by norm_num)
-  simp [h1, h2]
+    rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, arg_ofReal_of_nonneg (by norm_num)]
+  rw [h2, arg_one, add_zero]
 
 lemma argQuad_two (hT : 0 < T) : arg (1 / 2 + T * I : ℂ) + arg (1 / 2 + T * I - 1 : ℂ) = π := by
   have e : (1 / 2 + T * I - 1 : ℂ) = -1 / 2 + T * I := by ring
-  rw [e, arg_of_re_nonneg (by simp; norm_num),
-    arg_of_re_neg_of_im_nonneg (by simp; norm_num) (by simp; exact hT.le)]
+  rw [e, arg_of_re_nonneg (by norm_num),
+    arg_of_re_neg_of_im_nonneg (by norm_num) (by simp; exact hT.le)]
   have hn : ‖(1 / 2 + T * I : ℂ)‖ = ‖(-1 / 2 + T * I : ℂ)‖ := by
     rw [Complex.norm_def, Complex.norm_def]
     congr 1
@@ -122,15 +121,16 @@ lemma polar_Gammaℝ {s : ℂ} (hs : 0 < s.re) :
   rw [Gammaℝ_eq_exp_wG hs]
   exact polar_exp _
 
-set_option maxHeartbeats 1000000 in
 lemma continuousOn_wG : ContinuousOn wG {s : ℂ | 0 < s.re} := by
-  intro s hs
-  have hs' : 0 < s.re := hs
-  have h2 : s / 2 ∈ slitPlane := mem_slitPlane_iff.mpr (Or.inl (by simp; linarith))
-  have hL : ContinuousAt (fun s : ℂ => TauCeti.logGamma (s / 2)) s :=
-    (TauCeti.differentiableOn_logGamma.continuousOn.continuousAt
-      (isOpen_slitPlane.mem_nhds h2)).comp (continuousAt_id.div_const 2)
-  exact ((continuousAt_const.mul (continuousAt_id.neg.div_const 2)).add hL).continuousWithinAt
+  have h1 : Continuous (fun s : ℂ => (Real.log π : ℂ) * (-s / 2)) := by fun_prop
+  have h2 : ContinuousOn (fun s : ℂ => TauCeti.logGamma (s / 2)) {s : ℂ | 0 < s.re} := by
+    refine TauCeti.differentiableOn_logGamma.continuousOn.comp
+      (continuous_id.div_const (2 : ℂ)).continuousOn ?_
+    intro s hs
+    have hs' : 0 < s.re := hs
+    exact mem_slitPlane_iff.mpr (Or.inl (by simp; linarith))
+  unfold wG
+  exact h1.continuousOn.add h2
 
 lemma wG_two_im : (wG 2).im = 0 := by
   unfold wG
@@ -140,7 +140,7 @@ lemma wG_two_im : (wG 2).im = 0 := by
 lemma wG_half_add_im (T : ℝ) : (wG (1 / 2 + T * I)).im = rsTheta T := by
   unfold wG rsTheta
   have e : (1 / 2 + T * I : ℂ) / 2 = zTheta T := by
-    apply Complex.ext <;> simp [zTheta] <;> ring
+    apply Complex.ext <;> simp [zTheta]; ring
   rw [e]
   simp
   ring

@@ -20,7 +20,10 @@ Quot.sound]` (scratch/axioms-A-B.txt and the S1E check). No `native_decide`.
 | `S1F_v1.0_11-27-2026.lean` | `SchoenfeldS1.F` | chunk 2: counts with `RtB`, compiles, olean in build/ |
 | `S1G_v1.0_11-27-2026.lean` | `SchoenfeldS1.G` | chunk 2: ψ, θ bounds for `x ≥ 10^15` from `N(T)` with `RtB`, compiles, olean |
 | `S1D2_v1.0_11-27-2026.lean` | `SchoenfeldS1.D2` | chunk 2: Backlund disc function and Jensen's count, compiles, olean |
-| `S1C_WIP_v1.0_11-27-2026.lean` | (WIP, `sorry`) | chunk 2: exact target statements for (C), (D), (U'), (L'), the final theorem; type-checks |
+| `S1L_v1.0_11-27-2026.lean` | `SchoenfeldS1.L` | chunk 4: continuous argument of `xi` along the L-path, `exists_arg_xi_path`, compiles, olean |
+| `S1M_v1.0_11-27-2026.lean` | `SchoenfeldS1.M` | chunk 4: (C) `NT_eq_rsTheta_add` by the five boundary cells, compiles, olean |
+| `S1C_v1.0_11-27-2026.lean` | `SchoenfeldS1.C` | chunk 4: `abs_NT_sub_Mt_le`, (U') `NT_le_Mt_add_RtB` (T ≥ 14), (L') `Mt_sub_RtB_le_NT` (T ≥ 1000), compiles, olean |
+| `S1H_v1.0_11-27-2026.lean` | `SchoenfeldS1.H` | chunk 4: FINAL `schoenfeld_psi`, `schoenfeld_theta` (x ≥ 10^15), unconditional, compiles, olean |
 | `tools/lean1_v1.0_11-27-2026.sh FILE` | check a file against build/ + the port's oleans + the RH repo | |
 | `tools/build1_v1.0_11-27-2026.sh M` | compile `S1M_v1.0_11-27-2026.lean` to `build/SchoenfeldS1/M.olean` (copies it to `src/SchoenfeldS1/M.lean` for the module name) | |
 | `tools/build_tauceti1_v1.0_11-27-2026.sh` | attempt to compile unbuilt Tau Ceti modules locally; does NOT work for module-system files (see Findings 5) | |
@@ -546,3 +549,54 @@ Everything else in the file elaborates (the "unknown constant" kernel message is
 3. Move `NT_eq_rsTheta_add` and the S1C_WIP glue into delivered `S1C`/`S1H` files, build, axioms,
    grep rules, mirror. Then `schoenfeld_psi`/`schoenfeld_theta` are unconditional.
 4. Optional tightening (`x₀ = 10^14`, Backlund's `0.137`) as before.
+
+## Chunk 4 (11-27-2026, 14:45 start): closing `NT_eq_rsTheta_add`
+
+Owner's go: "keep going". Local only; the port and the RH repo sources untouched.
+
+### 14:52 S1L delivered (`SchoenfeldS1.L`, olean in build/, scratch/axioms-L.txt)
+The two defects were misdiagnosed in chunk 3: the "no goals" error was in `argQuad_two`
+(`arg_of_re_nonneg (by simp; norm_num)`: `simp` already closed the side goal), not in
+`argQuad_zero`; fixed by `(by norm_num)`. `continuousOn_wG` rewritten with `fun_prop` for the
+linear part and `differentiableOn_logGamma.continuousOn.comp (continuous_id.div_const 2).continuousOn`
+for the `logGamma` part; no heartbeat option needed. `exists_arg_xi_path` axioms:
+`[propext, Classical.choice, Quot.sound]`. S1L_WIP removed.
+
+### 14:56 (C) closed: S1M delivered (`SchoenfeldS1.M`, scratch/axioms-M.txt)
+`NT_eq_rsTheta_add (hT : 14 ≤ T) (hord : NotOrdinate T) : (NT T : ℝ) = rsTheta T / π + 1 + riemannZetaS T`
+proved exactly as planned, no new mathematics: `cell_var` (the restriction of the global `θ` from
+`exists_continuousOn_eq_norm_mul_exp_rectBoundary` and an explicit argument `ψ` have the same
+variation on a cell, `TauCeti.Contour.sub_eq_sub_of_eq_norm_mul_exp` on `Icc a b`), the five cell
+parametrizations `rb_zero_one` (`= ↑(-1 + 3t)`), `rb_one_two` (`= p (t - 1)`), `rb_two_half`
+(`= p (2t - 3)`), `rb_half_three` (`= 1 - conj (p (7 - 2t))`), `rb_three_four`
+(`= 1 - conj (p (4 - t))`), the lifts `polar_ofReal_pos` (argument `0`, `xi_ofReal_pos`) and
+`polar_conj` (conjugation negates the argument, with `xi_one_sub`, `xi_conj`), cell variations
+`0, Θ 1, Θ 2 - Θ 1, Θ 2 - Θ 1, Θ 1`, total `2 Θ 2 = 2 (π + rsTheta T + π S(T))`, equated with
+`2 π N(T)` from `rect_arg_sub_eq_two_pi_mul_NT`; `field_simp; linarith`. The sign and normalisation
+conventions matched literally: Tau Ceti `riemannZetaS T = θ 2 / π` for the argument `θ` of `ζ` along
+`riemannZetaSPath` with `θ 0 = 0` (`exists_riemannZetaS_eq_div_pi`), `rsTheta T = Im logΓ(1/4 + iT/2)
+- (T/2) log π = (wG (1/2 + iT)).im` (S1B, S1L `wG_half_add_im`). The conj cells needed the `conj`
+rewritten by hand (`map_add, conj_ofReal, map_mul, conj_ofReal, conj_I`) before `Complex.ext`; `simp`
+alone left `conj 3 * (conj 2)⁻¹` unsimplified. Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+### 14:57 Delivered S1C, S1H; the final theorems are unconditional
+S1C = the former S1C_WIP without the `sorry` theorem (imports `SchoenfeldS1.M` for it), S1H = the
+three final theorems (`schoenfeld_psi_large_of_Z`, `schoenfeld_psi`, `schoenfeld_theta`). WIP files
+removed. Verbatim (scratch/axioms-H.txt):
+```
+'SchoenfeldS1.schoenfeld_psi' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SchoenfeldS1.schoenfeld_theta' depends on axioms: [propext, Classical.choice, Quot.sound]
+SchoenfeldS1.schoenfeld_psi : ∀ x ≥ 10 ^ 15, |Chebyshev.psi x - x| ≤ √x * Real.log x ^ 2 / (8 * Real.pi)
+SchoenfeldS1.schoenfeld_theta : ∀ x ≥ 10 ^ 15, |Chebyshev.theta x - x| ≤ √x * Real.log x ^ 2 / (8 * Real.pi)
+```
+No `sorryAx`. Greps: no `sorry`/`admit`/`native_decide` in any S1 file, in the 50 port sources
+(`SchoenfeldPort.*`), in the Tau Ceti sources or the RH repo `src/`; the repo's `Challenge.lean` (the challenge template, a `sorry` placeholder for contributors) is not imported by anything in the chain. No forbidden words, no em-dashes.
+
+Import closure of `SchoenfeldS1.H` (S1 modules): H → C → {B, D3, G, Z, M}; M → {L, R}; L → {X, D3, B};
+R → {X, D3}; G → {F, D2, ...}; Z → {ZCore, ZGrid, ZG0, ZG1, ZG2}; A at the root. `SchoenfeldS1.E`
+(the `x ≥ 10^11` HSW variant) is not in the chain. External: `SchoenfeldPort.Final` (the port, 50
+modules), Tau Ceti (`Contour.Argument.Rectangle.{Basic,Variation}`, `LFunctions.Zeros.RiemannVonMangoldt.Argument`,
+`SpecialFunctions.Gamma.Stirling.Basic`, `Asymptotics.Sum.EulerMaclaurin`, `LSeries.RiemannZeta.{Bounds,Meromorphic}`),
+the RH repo (`riemannHypothesis`, Alpöge with Claude), Mathlib 31ce06ea.
+
+Left open: nothing for the stated goal. Optional tightening (`x₀ = 10^14`, Backlund's `0.137`) as before.

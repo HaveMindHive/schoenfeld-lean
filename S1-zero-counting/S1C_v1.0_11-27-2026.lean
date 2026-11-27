@@ -1,6 +1,8 @@
 /-
-Schoenfeld S1, part C (WORK IN PROGRESS, contains `sorry`): the Riemann-von Mangoldt identity
-`N(T) = θ(T)/π + 1 + S(T)` and everything downstream of it. Not delivered.
+Schoenfeld S1, part C: from the Riemann-von Mangoldt identity `N(T) = θ(T)/π + 1 + S(T)`
+(`SchoenfeldS1.M`), Stirling for `rsTheta` (`SchoenfeldS1.B`) and Backlund's bound on `S(T)`
+(`SchoenfeldS1.D3`): `|N(T) - Mt T| ≤ RtB T` at non-ordinates, then the one-sided bounds (U') for
+all `T ≥ 14` and (L') for all `T ≥ 1000` by one-sided limits through non-ordinates.
 AI-written Lean code (Claude), 11-27-2026. Environment: the riemann-hypothesis-community repository
 (Lean v4.37.0-rc1, Mathlib 31ce06ea, Tau Ceti; RH: Alpöge with Claude). Apache-2.0.
 -/
@@ -8,12 +10,13 @@ import SchoenfeldS1.B
 import SchoenfeldS1.D3
 import SchoenfeldS1.G
 import SchoenfeldS1.Z
+import SchoenfeldS1.M
 
 /-!
-# Target (C) and the assembly
+# (B) + (C) + (D) ⇒ (U'), (L')
 
-(D) is delivered in `SchoenfeldS1.D3` (`abs_riemannZetaS_le_backlund`, `abs_riemannZetaS_le`).
-The only `sorry` left is `NT_eq_rsTheta_add`; everything after it compiles.
+(C) is `NT_eq_rsTheta_add` of `SchoenfeldS1.M`, (D) is `abs_riemannZetaS_le` of `SchoenfeldS1.D3`,
+(B) is `abs_rsTheta_sub_main_le_of_fourteen_le` of `SchoenfeldS1.B`.
 -/
 
 namespace SchoenfeldS1
@@ -23,13 +26,6 @@ open TauCeti.LFunctions (riemannZetaS)
 open SchoenfeldPort.ChirreHagen2025.Lemma26H (Mt)
 
 local notation "ζ" => riemannZeta
-
-/-- **(C), target.** The Riemann-von Mangoldt identity: for `T ≥ 14` not an ordinate,
-`N(T) = θ(T)/π + 1 + S(T)` with `rsTheta` of `SchoenfeldS1.B` (the continuous branch,
-`rsTheta 0 = 0`). -/
-theorem NT_eq_rsTheta_add {T : ℝ} (hT : 14 ≤ T) (hord : NotOrdinate T) :
-    (NT T : ℝ) = rsTheta T / π + 1 + riemannZetaS T := by
-  sorry
 
 /-- `Mt T = rsThetaMain T/π + 1`. -/
 lemma Mt_eq_rsThetaMain {T : ℝ} (hT : 0 < T) : Mt T = rsThetaMain T / π + 1 := by
@@ -148,22 +144,5 @@ theorem Mt_sub_RtB_le_NT {T : ℝ} (hT : 1000 ≤ T) : Mt T - RtB T ≤ NT T := 
   rw [abs_le] at this
   have hmono' : (NT T' : ℝ) ≤ NT T := by exact_mod_cast hmono
   linarith [this.1]
-
-/-- Schoenfeld's bound for `x ≥ 10^15` from `N(14) = 0` alone. -/
-theorem schoenfeld_psi_large_of_Z (h14 : NT 14 = 0) :
-    ∀ x ≥ (10 : ℝ) ^ 15, |Chebyshev.psi x - x| ≤ √x * Real.log x ^ 2 / (8 * π) :=
-  schoenfeld_psi_large_of_NTB (fun _ hT => NT_le_Mt_add_RtB hT) (fun _ hT => Mt_sub_RtB_le_NT hT) h14
-
-/-- **Schoenfeld's bound, unconditional** (modulo the `sorry` in `NT_eq_rsTheta_add`):
-`|ψ(x) - x| ≤ √x log² x/(8π)` for every `x ≥ 10^15`. -/
-theorem schoenfeld_psi :
-    ∀ x ≥ (10 : ℝ) ^ 15, |Chebyshev.psi x - x| ≤ √x * Real.log x ^ 2 / (8 * π) :=
-  schoenfeld_psi_large_of_Z NT_fourteen_eq_zero
-
-/-- The `θ` version. -/
-theorem schoenfeld_theta :
-    ∀ x ≥ (10 : ℝ) ^ 15, |Chebyshev.theta x - x| ≤ √x * Real.log x ^ 2 / (8 * π) :=
-  schoenfeld_theta_large_of_NTB (fun _ hT => NT_le_Mt_add_RtB hT) (fun _ hT => Mt_sub_RtB_le_NT hT)
-    NT_fourteen_eq_zero
 
 end SchoenfeldS1

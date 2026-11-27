@@ -1,0 +1,4 @@
+'SchoenfeldS1.schoenfeld_psi' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SchoenfeldS1.schoenfeld_theta' depends on axioms: [propext, Classical.choice, Quot.sound]
+SchoenfeldS1.schoenfeld_psi : ∀ x ≥ 10 ^ 15, |Chebyshev.psi x - x| ≤ √x * Real.log x ^ 2 / (8 * Real.pi)
+SchoenfeldS1.schoenfeld_theta : ∀ x ≥ 10 ^ 15, |Chebyshev.theta x - x| ≤ √x * Real.log x ^ 2 / (8 * Real.pi)

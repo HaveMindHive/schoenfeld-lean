@@ -400,3 +400,149 @@ bound on the disc, not attempted.
    centre choices in `S1D2` (e.g. `R = 2 - ε`) lower `a` toward `3.5`; the convexity bound would
    reach Backlund's `0.137`.
 5. (A) stays with the other agent; the final theorem needs `NT 14 = 0` in the form of S1A's `NT`.
+
+## Chunk 3 (11-27-2026, 14:20 to 15:30): (D) done, (U')/(L')/final assembled, (C) half done
+
+Owner's go: "keep going". Local only, nothing pushed; the port and the RH repo sources untouched.
+One `lake build` in the RH repo (`+TauCeti.Analysis.Contour.Argument.Rectangle.Variation:olean`,
+`...Rectangle.Divisor`, `...Meromorphic.Counting.Rectangle`, `...LFunctions.Zeros.Counting.Basic`; 3 s,
+all cached) wrote only `.lake` artifacts (scratch/c3/tauceti-build-rect.log). Checks take 2 to 6 s
+per file now (oleans cached). The (A) sub-project is DONE by the other agent: `NT_fourteen_eq_zero`
+(PROGRESS-s1z).
+
+### Delivered (sorry-free, axioms `[propext, Classical.choice, Quot.sound]`, no `native_decide`)
+
+S1D3 (`SchoenfeldS1.D3`, scratch/axioms-D3.txt), target (D) complete:
+```
+def NotOrdinate (T : ℝ) : Prop := ∀ σ ∈ Ico (1/2) 1, ζ (σ + T I) ≠ 0
+theorem abs_lt_pi_div_two_of_cos_pos (hθ : ContinuousOn θ (Icc a b)) (h0 : θ a = 0)
+    (hcos : ∀ t ∈ Icc a b, 0 < cos (θ t)) : ∀ t ∈ Icc a b, |θ t| < π/2
+theorem abs_sub_le_pi_of_cos_ne_zero (hab : a ≤ b) (hθ : ContinuousOn θ (Icc a b))
+    (hcos : ∀ t ∈ Ioo a b, cos (θ t) ≠ 0) : |θ b - θ a| ≤ π
+theorem abs_sub_le_of_finite_cos_zero (Z : Finset ℝ) : ∀ {b}, a ≤ b → ContinuousOn θ (Icc a b) →
+    (∀ z ∈ Z, z ∈ Ioo a b) → (∀ t ∈ Ioo a b, t ∉ Z → cos (θ t) ≠ 0) → |θ b - θ a| ≤ (Z.card + 1) π
+theorem abs_riemannZetaS_le_backlund (hT : 14 ≤ T) (hord : NotOrdinate T) :
+    |riemannZetaS T| ≤ log ((8T + 48)/(2 - π²/6)) / log (5/4) + 3/2
+theorem abs_riemannZetaS_le (hT : 14 ≤ T) (hord : NotOrdinate T) : |riemannZetaS T| ≤ 4.5 log T + 17.08
+```
+Numerics used (all proven in the file): `log(5/4) ≥ 0.22313` (`Real.abs_log_sub_add_sum_range_le`,
+8 terms), `log(80/7) ≤ 2.44` (`exp_one_gt_d9`, 5 Taylor terms of `exp 0.44`),
+`log(2 - π²/6) ≥ -1.04` (`pi_lt_d6`, `add_one_le_exp`), `log T ≥ 2` for `T ≥ 14`. The cosine
+argument: `Re ζ(path t) = ‖ζ(path t)‖ cos θ t`; on `[0,1]` the real part is `≥ 2 - π²/6`; on `[1,2]`
+the zero set of `cos θ` is `{t : gB T (σ t) = 0}`, finite with at most `q` points by
+`card_zeros_gB_le` (`Set.Infinite.exists_subset_card_eq` for finiteness).
+
+S1X (`SchoenfeldS1.X`, scratch/axioms-X-R.txt), the entire function for (C):
+```
+noncomputable def xi (s : ℂ) : ℂ := s * (s - 1) * completedRiemannZeta₀ s + 1   -- = s(s-1)Λ(s) off 0,1
+differentiable_xi, analyticOnNhd_xi, analyticAt_xi, continuous_xi, xi_zero : xi 0 = 1, xi_one : xi 1 = 1
+xi_one_sub (s) : xi (1 - s) = xi s
+xi_eq_mul (hs0 : s ≠ 0) (hs1 : s ≠ 1) (hG : Gammaℝ s ≠ 0) : xi s = s (s - 1) (Gammaℝ s ζ s)
+xi_conj (s) : xi (conj s) = conj (xi s)                       -- Mathlib completedRiemannZeta_conj
+xi_ne_zero_of_one_le_re, xi_ne_zero_of_re_nonpos, re_pos_lt_one_of_xi_eq_zero
+xi_eq_zero_iff (h0 : 0 < s.re) (h1 : s.re < 1) : xi s = 0 ↔ ζ s = 0
+analyticAt_Gammaℝ_of_re_pos (hs : 0 < s.re) : AnalyticAt ℂ Gammaℝ s
+analyticOrderNatAt_xi (h0) (h1) : analyticOrderNatAt xi ρ = analyticOrderNatAt ζ ρ
+Gammaℝ_ofReal_pos (hσ : 0 < σ) : Gammaℝ σ = ↑(π^(-σ/2) Real.Gamma (σ/2)) ∧ 0 < π^(-σ/2) Real.Gamma (σ/2)
+xi_ofReal_pos (σ : ℝ) : xi σ = ((xi σ).re : ℂ) ∧ 0 < (xi σ).re ;  xi_ofReal_ne_zero
+xi_ne_zero_of_notOrdinate (hord : ∀ σ ∈ Ico (1/2) 1, ζ (σ + t I) ≠ 0) (σ : ℝ) : xi (σ + t I) ≠ 0
+```
+S1R (`SchoenfeldS1.R`), the rectangle half of (C):
+```
+xi_ne_zero_frontier (hord : NotOrdinate T) : ∀ x ∈ frontier (Rectangle (-1) (2 + T I)), xi x ≠ 0
+filter_zerosBandF_eq (hT : 0 < T) : (zerosBandF (-1) (T+1)).filter (· ∈ Rectangle (-1) (2 + T I)) = zerosBandF 0 T
+sum_order_xi_eq_NT (hT : 0 < T) : Σ_{s ∈ zerosBandF (-1) (T+1), s ∈ Rectangle} (analyticOrderNatAt xi s : ℂ) = NT T
+theorem rect_arg_sub_eq_two_pi_mul_NT (hT : 0 < T) (hord : NotOrdinate T) {θ : ℝ → ℝ}
+    (hθ : ContinuousOn θ (Icc 0 4))
+    (hlift : ∀ t ∈ Icc 0 4, xi (rectBoundary (-1) (2 + T I) t) = ‖xi (…)‖ exp (I θ t)) :
+    θ 4 - θ 0 = 2 π NT T
+```
+(Tau Ceti `argumentPrinciple_rectBoundary_of_analyticOnNhd` on `U = (-2,3) × (-1, T+1)`, finite zero
+set `zerosBandF (-1) (T+1)`, and
+`AbsolutelyContinuousOnInterval.integral_deriv_smul_logDeriv_eq_log_norm_add_I_mul_sub`.)
+
+### Compiled modulo one `sorry` (S1C_WIP, imports B, D3, G, Z)
+
+The WIP file now type-checks with exactly one `sorry`, `NT_eq_rsTheta_add`; everything downstream
+is proven from it:
+```
+theorem NT_eq_rsTheta_add (hT : 14 ≤ T) (hord : NotOrdinate T) : (NT T : ℝ) = rsTheta T / π + 1 + riemannZetaS T  -- SORRY
+lemma Mt_eq_rsThetaMain (hT : 0 < T) : Mt T = rsThetaMain T / π + 1
+theorem abs_NT_sub_Mt_le (hT : 14 ≤ T) (hord : NotOrdinate T) : |(NT T : ℝ) - Mt T| ≤ RtB T
+lemma continuousAt_Mt, continuousAt_RtB (hT : 0 < T)
+theorem NT_le_Mt_add_RtB (hT : 14 ≤ T) : (NT T : ℝ) ≤ Mt T + RtB T          -- (U'), all T ≥ 14
+theorem Mt_sub_RtB_le_NT (hT : 1000 ≤ T) : Mt T - RtB T ≤ NT T              -- (L'), all T ≥ 1000
+theorem schoenfeld_psi_large_of_Z (h14 : NT 14 = 0) : ∀ x ≥ 10^15, |ψ x - x| ≤ √x log² x/(8π)
+theorem schoenfeld_psi : ∀ x ≥ (10:ℝ)^15, |Chebyshev.psi x - x| ≤ √x * Real.log x ^ 2 / (8 * π)
+theorem schoenfeld_theta : ∀ x ≥ (10:ℝ)^15, |Chebyshev.theta x - x| ≤ √x * Real.log x ^ 2 / (8 * π)
+```
+(U')/(L') at ordinates: filters `𝓝[>] T`, `𝓝[<] T`; `Filter.eventually_all_finset` over
+`zerosBandF T (T+1)` (resp. `zerosBandF (T-1) T`) gives that every `T'` close to `T` is a
+non-ordinate with `NT T' = NT T` (resp. `NT T' ≤ NT T`); `ge_of_tendsto`/`le_of_tendsto` with the
+continuity of `Mt ± RtB`. No separate `exists_notOrdinate_between` was needed.
+
+### What remains for `NT_eq_rsTheta_add` (the boundary argument, S1R second half)
+
+With `rect_arg_sub_eq_two_pi_mul_NT` the identity is: for some continuous argument `θ` of `xi`
+along `rectBoundary (-1) (2 + iT)`, `θ 4 - θ 0 = 2 (π + rsTheta T + π S(T))`. Plan (verified by hand):
+1. **Arg of `xi` along the L-path** `p u := riemannZetaSPath T u`, `u ∈ [0, 2]`:
+   `xi (p u) = p u (p u - 1) · Gammaℝ (p u) · ζ (p u)` (`xi_eq_mul`; `Re p u ≥ 1/2`). Polar forms:
+   * `s (s - 1) = ‖s‖‖s - 1‖ e^{i (arg s + arg (s - 1))}` (`norm_mul_exp_arg_mul_I`), both `s` and
+     `s - 1` in `slitPlane` along the path (`Im > 0` or real `> 0`), so `α u := arg (p u) + arg (p u - 1)`
+     is continuous (`continuousAt_arg`), `α 0 = 0`, `α 2 = arg (1/2 + iT) + arg (-1/2 + iT) = π`
+     (`arg_of_re_neg_of_im_nonneg`, `arg` of `Re > 0` is `arctan (im/re)`).
+   * `Gammaℝ s = exp (-(s/2) log π + logGamma (s/2))` (`cpow_def_of_ne_zero`, `TauCeti.exp_logGamma`,
+     `s/2 ∈ slitPlane`), so `β u := -(Im p u)/2 · log π + Im (logGamma (p u / 2))` is continuous
+     (`differentiableOn_logGamma.continuousOn`), `β 0 = 0` (`logGamma_one`), `β 2 = rsTheta T`
+     (`zTheta T = (1/2 + iT)/2`).
+   * `φ` from `exists_riemannZetaS_eq_div_pi`: `φ 0 = 0`, `φ 2 = π S(T)`.
+   `Θ u := α u + β u + φ u` is a continuous argument of `xi ∘ p` on `[0, 2]`, `Θ 0 = 0`,
+   `Θ 2 = π + rsTheta T + π S(T)`.
+2. **The five cells of `rectBoundary (-1) (2 + iT)`** (`rectBoundary_of_mem_Icc_*`):
+   `[0,1]` bottom `-1 + 3t` (arg `0`, `xi_ofReal_pos`); `[1,2]` right `= p (t - 1)` (arg `Θ (t-1)`);
+   `[2, 5/2]` top-right `= p (1 + 2(t-2))` (arg `Θ (2t - 3)`); `[5/2, 3]` top-left
+   `xi = conj (xi (p (7 - 2t)))` by `xi_one_sub` and `xi_conj` (arg `-Θ (7 - 2t)`); `[3,4]` left
+   `xi (-1 + i T(4-t)) = conj (xi (p (4 - t)))` (arg `-Θ (4 - t)`). Cell changes
+   `0, Θ 1, Θ 2 - Θ 1, Θ 2 - Θ 1, Θ 1`, total `2 Θ 2`.
+3. **Uniqueness per cell**: Tau Ceti `sub_eq_sub_of_eq_norm_mul_exp` (two continuous arguments of
+   the same nonvanishing function on a preconnected set have the same variation) applied to the
+   restriction of the global `θ` (from `exists_continuousOn_eq_norm_mul_exp_rectBoundary`) and the
+   explicit cell argument, cell by cell; telescoping gives `θ 4 - θ 0 = 2 Θ 2`, then
+   `2 π NT T = 2 (π + rsTheta T + π S(T))`.
+Estimated 6 to 10 h (casts and the five cell parametrizations are the cost, no new mathematics).
+
+### S1L_WIP (step 1 of the remaining plan, 15:35): `exists_arg_xi_path`, nearly compiled
+
+`S1L_WIP_v1.0_11-27-2026.lean` (imports X, D3, B) states and proves
+```
+theorem exists_arg_xi_path (hT : 14 ≤ T) (hord : NotOrdinate T) : ∃ Θ : ℝ → ℝ, ContinuousOn Θ (Icc 0 2) ∧
+    (∀ u ∈ Icc 0 2, xi (riemannZetaSPath T u) = ‖xi (…)‖ exp (I Θ u)) ∧ Θ 0 = 0 ∧ Θ 2 = π + rsTheta T + π riemannZetaS T
+```
+with `Θ u = arg (p u) + arg (p u - 1) + (wG (p u)).im + φ u`, `wG s = log π · (-s/2) + logGamma (s/2)`.
+Compiled pieces: `polar_mul`, `polar_of_arg`, `polar_exp`, `re_path_ge`, `im_path_nonneg`,
+`path_mem_slitPlane`, `path_sub_one_mem_slitPlane`, `continuousOn_path`, `polar_quad`,
+`continuousOn_argQuad`, `argQuad_two` (`arg(1/2 + iT) + arg(-1/2 + iT) = π`), `Gammaℝ_eq_exp_wG`,
+`polar_Gammaℝ`, `wG_two_im`, `wG_half_add_im` (`= rsTheta T`), and the main theorem's four goals
+(the polar product and the two endpoint values go through). Two defects left (last check, 21 s):
+1. `argQuad_zero` (`arg 2 + arg 1 = 0`): `rw [show (2:ℂ) = ((2:ℝ):ℂ) by norm_num]` already closes
+   the goal, so the following `exact` reports "no goals"; drop the `exact` lines.
+2. `continuousOn_wG : ContinuousOn wG {s | 0 < s.re}` hits a `whnf` heartbeat timeout even at
+   `maxHeartbeats 1000000` (likely the elaboration of `continuousAt_id.neg.div_const 2` against
+   `fun s => ↑(log π) * (-s / 2)`, or the set-builder membership `hs`); rewrite it with explicit
+   `HasDerivAt`/`Continuous` lemmas or `ContinuousOn.add` on named functions, or prove
+   `ContinuousOn (fun s => (wG s).im)` through `Complex.continuous_im.comp_continuousOn`
+   with the two summands separately.
+Everything else in the file elaborates (the "unknown constant" kernel message is a consequence of 2).
+
+### NEXT-CHUNK plan (chunk 4), in order
+1. Fix the two S1L defects (30 min), build `SchoenfeldS1.L`, `#print axioms`.
+2. The five cells (S1R second half, 4 to 8 h): for each cell of `rectBoundary (-1) (2 + iT)` give the
+   explicit continuous argument (see "What remains" above), prove the cell lift
+   (`rectBoundary_of_mem_Icc_*`, `xi_one_sub`, `xi_conj`, `xi_ofReal_pos`), then apply
+   `TauCeti.Contour.sub_eq_sub_of_eq_norm_mul_exp` to the global `θ` from
+   `exists_continuousOn_eq_norm_mul_exp_rectBoundary` (`continuous_xi.continuousOn`,
+   `xi_ne_zero_frontier`) and telescope: `θ 4 - θ 0 = 2 Θ 2`. With `rect_arg_sub_eq_two_pi_mul_NT`
+   this is `NT_eq_rsTheta_add` (divide by `2π`).
+3. Move `NT_eq_rsTheta_add` and the S1C_WIP glue into delivered `S1C`/`S1H` files, build, axioms,
+   grep rules, mirror. Then `schoenfeld_psi`/`schoenfeld_theta` are unconditional.
+4. Optional tightening (`x₀ = 10^14`, Backlund's `0.137`) as before.

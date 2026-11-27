@@ -31,7 +31,7 @@ SchoenfeldPort.psi_sub_theta_large : ∀ x ≥ 10 ^ 11, ψ x - θ x ≤ 1.2 * �
 3. `tools/gen_makefile_v1.0_11-27-2026.py` then `make -C build -j6`: one olean per module, lean of
    the RH repo's toolchain, LEAN_PATH = build/ + the RH repo's built oleans. Nothing written there.
 4. `tools/lean1_v1.0_11-27-2026.sh FILE`: check one file in that environment.
-5. `tools/mirror_v1.0_11-27-2026.sh`: mirror to OneDrive (without build/, scratch/).
+5. (local mirror script omitted from the public repo)
 
 ## Fixes for the newer Lean / Mathlib
 

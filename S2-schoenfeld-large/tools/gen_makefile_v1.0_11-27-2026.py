@@ -1,9 +1,8 @@
 """Write build/Makefile: one olean per ported module, compiled against the built RH repo.
-usage: python3 -I gen_makefile_v1.0_11-27-2026.py PORT_DIR"""
+usage: RH_REPO=/path/to/riemann-hypothesis python3 -I gen_makefile_v1.0_11-27-2026.py PORT_DIR"""
 import os, re, sys, glob
 PORT = os.path.abspath(sys.argv[1])
-REPO = os.path.expanduser('~/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/'
-                          'riemann-hypothesis-community_v1.0_11-27-2026/repo')
+REPO = os.environ.get('RH_REPO') or sys.exit('set RH_REPO to a built riemann-hypothesis clone')
 SRC, B = PORT + '/src', PORT + '/build'
 lp = [B, REPO + '/.lake/build/lib/lean'] + sorted(glob.glob(REPO + '/.lake/packages/*/.lake/build/lib/lean'))
 LEAN = os.path.expanduser('~/.elan/toolchains/leanprover--lean4---v4.37.0-rc1/bin/lean')

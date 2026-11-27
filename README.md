@@ -1,5 +1,8 @@
 # schoenfeld-lean
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24606897.svg)](https://doi.org/10.5281/zenodo.24606897)
+
+
 > **Proven, with nothing assumed beyond the proven Riemann hypothesis:** for every x ≥ 10¹⁵,
 > |ψ(x) − x| ≤ √x·(log x)²/(8π) and |θ(x) − x| ≤ √x·(log x)²/(8π),
 > Schoenfeld's exact constant, kernel-checked in Lean 4. Paper: [Zenodo, DOI 10.5281/zenodo.24606897](https://doi.org/10.5281/zenodo.24606897) (`SchoenfeldS1.schoenfeld_psi`, `SchoenfeldS1.schoenfeld_theta`; axioms: `propext`, `Classical.choice`, `Quot.sound`; see `S1-zero-counting/axioms-final_v1.0_11-27-2026.txt`).
@@ -36,6 +39,10 @@ Every file is kernel-checked inside the environment of the community Lean proof 
 ## Check it
 
 You need a built clone of `leanprover-community/riemann-hypothesis` (tested at commit `8c828ed`, Lean v4.37.0-rc1). F1: `F1-explicit/check-explicit_v1.0_11-27-2026.sh` (see its header). S2: build the ported modules with the scripts in `S2-schoenfeld-large/tools/`, then `RH_REPO=/path/to/riemann-hypothesis sh S2-schoenfeld-large/tools/lean1_v1.0_11-27-2026.sh S2-schoenfeld-large/src/SchoenfeldPort/Final.lean`. Every main theorem ends with `#print axioms`; expect `[propext, Classical.choice, Quot.sound]`.
+
+## Cite
+
+Rayn-McLean, T. (2026). *Schoenfeld's bounds for psi and theta from the formalized Riemann hypothesis*. Zenodo. https://doi.org/10.5281/zenodo.24606897
 
 ## Credits and licence
 

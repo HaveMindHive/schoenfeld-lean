@@ -16,7 +16,11 @@ Quot.sound]` (scratch/axioms-A-B.txt and the S1E check). No `native_decide`.
 | `S1A_v1.0_11-27-2026.lean` | `SchoenfeldS1.A` | compiles, olean in build/ |
 | `S1B_v1.0_11-27-2026.lean` | `SchoenfeldS1.B` | compiles, olean in build/ |
 | `S1D_v1.0_11-27-2026.lean` | `SchoenfeldS1.D` | compiles, olean in build/ |
-| `S1E_v1.0_11-27-2026.lean` | `SchoenfeldS1.E` | compiles, olean in build/ |
+| `S1E_v1.0_11-27-2026.lean` | `SchoenfeldS1.E` | compiles, olean in build/ (HSW `Rt`, `x ≥ 10^11`; superseded by G) |
+| `S1F_v1.0_11-27-2026.lean` | `SchoenfeldS1.F` | chunk 2: counts with `RtB`, compiles, olean in build/ |
+| `S1G_v1.0_11-27-2026.lean` | `SchoenfeldS1.G` | chunk 2: ψ, θ bounds for `x ≥ 10^15` from `N(T)` with `RtB`, compiles, olean |
+| `S1D2_v1.0_11-27-2026.lean` | `SchoenfeldS1.D2` | chunk 2: Backlund disc function and Jensen's count, compiles, olean |
+| `S1C_WIP_v1.0_11-27-2026.lean` | (WIP, `sorry`) | chunk 2: exact target statements for (C), (D), (U'), (L'), the final theorem; type-checks |
 | `tools/lean1_v1.0_11-27-2026.sh FILE` | check a file against build/ + the port's oleans + the RH repo | |
 | `tools/build1_v1.0_11-27-2026.sh M` | compile `S1M_v1.0_11-27-2026.lean` to `build/SchoenfeldS1/M.olean` (copies it to `src/SchoenfeldS1/M.lean` for the module name) | |
 | `tools/build_tauceti1_v1.0_11-27-2026.sh` | attempt to compile unbuilt Tau Ceti modules locally; does NOT work for module-system files (see Findings 5) | |
@@ -198,7 +202,7 @@ S1 is now exactly these three real statements about `NT`.
    and the numerals in `S1`, `S2`, `core`, `large_facts` (a few hours of `nlinarith` work).
    These margins are rough (one Python evaluation); redo them in Lean when `Rt'` is known.
 
-## NEXT-CHUNK plan (chunk 2)
+## Chunk 2 plan as written at the end of chunk 1 (superseded by the chunk 2 section and the chunk 3 plan below; kept for the record)
 
 1. **Fix the S1 target from Finding 6 (1 h).** Decide `Rt'` and `x₀`: aim at a Backlund-type
    `C₁ᵉ ≤ 0.5`, `C₃' ≤ 12` at `x₀ = 10^11`, fall back to `x₀ = 10^14` if only the crude disc bound
@@ -234,3 +238,165 @@ The banned prime-method words, the legacy three-letter residue-theorem abbreviat
 do not occur (grep check each milestone); Apache-2.0 attribution in each file header (goldbach-lean: Steve
 Hubbard; Tau Ceti contributors; RH: Alpöge with Claude); constants quoted from the fetched HSW
 source only.
+
+## Chunk 2 (11-27-2026, 13:50 to 14:25): goal 1 done, (D) half done, (C) stated
+
+Owner's go: "keep going". Local only, nothing pushed; the port and the RH repo sources untouched
+(one `lake build` of a Tau Ceti module in the RH repo, writing only `.lake` artifacts, see below).
+
+### Decision: `RtB T = 4.5 log T + 17.1`, `x₀ = 10^15`, tail threshold `1000`
+
+Why these numbers (scratch, Python `consts.py`, mpmath 30 digits):
+* Backlund's disc with the crude bound of the port (`‖ζ s‖ ≤ 2 + ‖s‖/Re s`) on the disc of radius
+  `R = 15/8` about `2 + iT` (`Re s ≥ 1/8`): `‖ζ‖ ≤ 8T + 48`; Jensen with `r = 3/2` (covers
+  `1/2 ≤ σ ≤ 2`) and `|g(2)| ≥ 2 - π²/6 = 0.3550...` gives at most
+  `log((8T + 48)/0.3550)/log(5/4)` zeros, `1/log(5/4) = 4.48142...`, and for `T ≥ 14`
+  `log(8 + 48/14) - log(0.3550) = 3.4853...`, so count `≤ 4.4815 log T + 15.62`; the argument
+  bookkeeping adds `3/2`, Stirling (S1B) adds `11/(224π) = 0.0156`; total `≤ 4.5 log T + 17.0957`
+  (checked: `max_T≥14 [backlund(T) - (4.5 log T + 17.08)] = -0.0715`). Radius `7/4` (S1D's lemma)
+  would give `6.4872 log T + 19.54` and need `x₀ = 10^16`.
+* The port's `core` inequality with `RtB` (numerals `K = 4.8`, `2A₀ = 18`, `C₂ = 72.9`): margin
+  `-1.25 √x` at `10^13`, `+0.14 √x` at `10^14`, `+1.00 √x` at `10^15`, `+1.89 √x` at `10^16`.
+  `10^15` chosen for a comfortable `nlinarith`; `10^14` is possible with careful re-tuning
+  (margin 0.14) and is noted as a later tightening.
+* `slackB` (`1.1 (18 log T + 72.9 - 0.25 T) ≤ 0.89 T - 36 - 9 log T`) fails near `T = 70` and holds
+  from about `T = 250`; the threshold was set to `1000` (needs only `log T ≤ T/100`). In S2,
+  `T = 2π√x/log x ≥ 2π · 2530 > 15 000` already at `x ≥ 10^11`, so this is free.
+
+Numeral checklist (port constant → S1F/S1G constant): `Rt_le (0.251, 10.25)` → none (`RtB` is
+linear in `log`); `head_count (22.25, 0.502)` → `(36, 9)`; `AT = 20.5 + 2Rt` → `ATB = 34.2 + 2RtB`;
+`AT_le (0.502, 41)` → `(9, 68.4)`; `H2_bound (1.004, 41.26)` → `(18, 72.9)`; `slack` at `70` →
+`slackB` at `1000` via `log_le_hundredth`; `count_major mF (22.25, 0.502)` → `mFB (36, 9)`;
+`head_inv 1.57` → `head_invB 4.8` (`(36 + 9 (log 14 + 1))/14 - 1/(2π) ≤ 4.95 - 0.158`);
+`S1, S2` → `SB1, SB2`; `large_facts (316227, 25.3, L² ≤ s/100, 3.2)` →
+`large_factsB (31622776, 34.5, L² ≤ s/10000, 3.5)`; `core` → `coreB` (intermediate slack
+`0.0002 s → 0.0004 s`, `1.2122 → 1.2124`, product hints `(l - 3.5)(L/7 - l) ≥ 0`,
+`(l - 3.5)(L - 34.5) ≥ 0`).
+
+### Proven (exact statements), all sorry-free, axioms `[propext, Classical.choice, Quot.sound]`
+(scratch/axioms-G.txt, scratch/axioms-D2.txt)
+
+S1F (`SchoenfeldS1.F`):
+```
+noncomputable def RtB (T : ℝ) : ℝ := 4.5 * log T + 17.1
+def NB1000 (γ : ι → ℝ) : Prop := (∀ T ≥ 1000, ∀ s, #{i ∈ s | |γ i| ≤ T} ≤ 2 (Mt T + RtB T)) ∧
+  (∀ T t, 1000 ≤ T → T ≤ t → ∀ s, #{i ∈ s | T < |γ i| ≤ t} ≤ 2 ((Mt t + RtB t) - (Mt T - RtB T)))
+def NBHead14 (γ : ι → ℝ) : Prop := ∀ T ≥ 14, ∀ s, #{i ∈ s | |γ i| ≤ T} ≤ 2 (Mt T + RtB T)
+lemma head_countB (hN : NB1000 γ) (hT : 1000 ≤ T) (s) : #{|γ| ≤ T} ≤ T log T/π - (0.89 T - 36 - 9 log T)
+lemma tail_inv_sqB (hN : NB1000 γ) (hT : 1000 ≤ T) (s) :
+    Σ_{i ∈ s, ¬|γ i| ≤ T} 1/γ i² ≤ log T/(πT) + (18 log T + 72.9 - 0.25 T)/T²
+lemma slackB (hT : 1000 ≤ T) : 0 ≤ 0.89 T - 36 - 9 log T ∧ 1.1 (18 log T + 72.9 - 0.25 T) ≤ 0.89 T - 36 - 9 log T
+lemma count_majorB (ht : 14 ≤ t) : 2 (Mt t + RtB t) ≤ mFB t   -- mFB t = t(log t - log 2π - 1)/π + 36 + 9 log t
+lemma head_invB (hN : NBHead14 γ) (h14 : ∀ i, 14 ≤ |γ i|) (hT : 14 ≤ T) (s) :
+    Σ_{i ∈ s, |γ i| ≤ T} 1/|γ i| ≤ (log T - log 2π)²/(2π) + 4.8
+theorem zdiff_leB (hN : NB1000 γ) (hH : NBHead14 γ) (h14) (hx : 0 < x) (hh : 0 ≤ h) (hT : 1000 ≤ T) :
+    ‖Σ' fz (x+h) - Σ' fz x‖ ≤ h (x+h)^{1/2} SB1 T + 2 (x+h)^{3/2} SB2 T
+```
+S1G (`SchoenfeldS1.G`):
+```
+theorem psi_upper_genB / psi_lower_genB  (as the port's, with SB1, SB2, 1000 ≤ T)
+lemma large_factsB (hx : 10^15 ≤ x) : 31622776 ≤ √x ∧ 34.5 ≤ log x ∧ log x² ≤ √x/10000 ∧
+    3.5 ≤ log (log x) ∧ log (log x) ≤ log x/7 ∧ log x = 2 log √x
+lemma coreB  (the port's core with 4.8, 18, 72.9 and the 10^15 facts)
+theorem psi_schoenfeld_large_slackB (hRH) (hN : NB1000 gZ) (hH : NBHead14 gZ) (h14 : Ordinates14 gZ)
+    (hx : 10^15 ≤ x) : |psiF x - x| ≤ √x log² x/(8π) - 1.2 √x
+theorem psi_schoenfeld_largeB (hN) (hH) (h14) : ∀ x ≥ 10^15, |ψ x - x| ≤ √x log² x/(8π)
+theorem theta_schoenfeld_largeB (hN) (hH) (h14) : ∀ x ≥ 10^15, |θ x - x| ≤ √x log² x/(8π)
+theorem NBHead14_of_NT (h : ∀ T ≥ 14, (NT T : ℝ) ≤ Mt T + RtB T) : NBHead14 gZ
+theorem NB1000_of_NT (hU : ∀ T ≥ 1000, NT T ≤ Mt T + RtB T) (hL : ∀ T ≥ 1000, Mt T - RtB T ≤ NT T) : NB1000 gZ
+theorem schoenfeld_psi_large_of_NTB
+    (hU : ∀ T : ℝ, 14 ≤ T → (NT T : ℝ) ≤ Mt T + RtB T)
+    (hL : ∀ T : ℝ, 1000 ≤ T → Mt T - RtB T ≤ NT T)
+    (h14 : NT 14 = 0) :
+    ∀ x ≥ (10 : ℝ) ^ 15, |ψ x - x| ≤ √x * log x ^ 2 / (8 * π)
+theorem schoenfeld_theta_large_of_NTB (same hypotheses) : ∀ x ≥ 10^15, |θ x - x| ≤ √x log² x/(8π)
+```
+S1D2 (`SchoenfeldS1.D2`), target (D) groundwork:
+```
+theorem norm_riemannZeta_le_on_disc' (hT : 3 ≤ T) (hs : ‖s - (2 + T I)‖ ≤ 15/8) : ‖ζ s‖ ≤ 8 T + 48
+noncomputable def gB (T : ℝ) (z : ℂ) : ℂ := (ζ (z + T I) + ζ (z - T I)) / 2
+lemma gB_eq_re_of_real (T σ : ℝ) : gB T σ = ((ζ (σ + T I)).re : ℂ)        -- riemannZeta_conj
+theorem analyticOnNhd_gB (hT : 3 ≤ T) : AnalyticOnNhd ℂ (gB T) (closedBall 2 (15/8))
+theorem norm_gB_le (hT : 3 ≤ T) (hz : z ∈ closedBall 2 (15/8)) : ‖gB T z‖ ≤ 8 T + 48
+theorem norm_gB_two_ge (T) : 2 - π²/6 ≤ ‖gB T 2‖ ;  theorem gB_two_ne_zero (T) : gB T 2 ≠ 0
+theorem sum_divisor_gB_le (hT : 3 ≤ T) :
+    ((Σᶠ u, MeromorphicOn.divisor (gB T) (closedBall 2 (3/2)) u : ℤ) : ℝ)
+      ≤ log ((8 T + 48)/(2 - π²/6)) / log (5/4)                        -- Mathlib AnalyticOnNhd.sum_divisor_le
+theorem card_le_sum_divisor (hr : 0 ≤ r) (hf : AnalyticOnNhd ℂ f (closedBall c r)) (hc : f c ≠ 0)
+    (s : Finset ℂ) (hs : ∀ z ∈ s, z ∈ closedBall c r ∧ f z = 0) : (s.card : ℤ) ≤ Σᶠ u, divisor f (closedBall c r) u
+theorem card_zeros_gB_le (hT : 3 ≤ T) (s : Finset ℂ) (hs : ∀ z ∈ s, z ∈ closedBall 2 (3/2) ∧ gB T z = 0) :
+    (s.card : ℝ) ≤ log ((8 T + 48)/(2 - π²/6)) / log (5/4)
+```
+Mathlib already has Jensen's inequality for zero counts (`AnalyticOnNhd.sum_divisor_le`,
+Mathlib/Analysis/Complex/JensenFormula.lean), so the disc step of (D) cost 200 lines, not the
+25 h estimated. The identity theorem (`eqOn_zero_of_preconnected_of_eventuallyEq_zero`) excludes
+infinite order since `gB T 2 ≠ 0`.
+
+### Tau Ceti's `S(T)` is now built (Finding 5 resolved)
+
+`lake build --fail-fast +TauCeti.NumberTheory.LFunctions.Zeros.RiemannVonMangoldt.Argument:olean`
+in the RH repo finished in under a minute (its 5 unbuilt dependencies were cached except the
+elaboration); only `.lake/packages/TauCeti/.lake/build` was written. `riemannZetaS T`,
+`riemannZetaS_eq_sub_div_pi`, `exists_riemannZetaS_eq_div_pi` import fine from S1 files
+(`S1C_WIP` imports the module). `lake build` does not accept `-j`; it used the machine's cores for
+the minute it ran.
+
+### Literature constants for `|S(T)| ≤ a log T + b log log T + c` (fetched 11-27-2026, agent report)
+
+Read on https://arxiv.org/html/1208.5846v2 (Trudgian, arXiv 1208.5846 v2, Table 1 and Theorem 1;
+journal version J. Number Theory 134 (2014) 280-292 not read):
+| source | a | b | c | T ≥ |
+|---|---|---|---|---|
+| Backlund 1914 (as tabulated by Trudgian) | 0.275 | 0.979 | 7.446 | 200 |
+| Backlund 1918 (as tabulated by Trudgian) | 0.137 | 0.443 | 4.35 | 200 |
+| Rosser 1941 (as tabulated by Trudgian) | 0.137 | 0.443 | 1.588 | 1467 |
+| Trudgian 2012 (arXiv v2, Theorem 1) | 0.111 | 0.275 | 2.450 | e |
+Hasanalizade-Shen-Wong (abstract, https://arxiv.org/abs/2107.06506): `0.1038, 0.2573, 9.3675` in
+`N(T)` form; their introduction could not be fetched (HTML 404, PDF binary). Chunk 1 noted (from
+the HSW TeX source) that HSW report Trudgian's input `|ζ(1+it)| ≤ (3/4) log t` as flawed.
+Our `RtB` (`4.5, 0, 17.1`) is the crude-disc version; Backlund's own `0.137` needs the convexity
+bound on the disc, not attempted.
+
+### Status of (A) to (E) after chunk 2
+
+* (A) `NT 14 = 0`: another agent (not touched here).
+* (B) done (S1B).
+* (C) `N(T) = θ(T)/π + 1 + S(T)`: stated exactly (`S1C_WIP.NT_eq_rsTheta_add`), proof not started.
+* (D) `|S(T)|`: disc and Jensen count done (S1D2); the argument bookkeeping
+  (`S1C_WIP.abs_riemannZetaS_le_backlund`: vertical segment `|θ| < π/2`, horizontal segment
+  `≤ (q + 1) π` with `q ≤ card_zeros_gB_le`) not started; numeric form
+  `abs_riemannZetaS_le : |S(T)| ≤ 4.5 log T + 17.08` stated.
+* (E) done for `RtB`, `x₀ = 10^15` (S1G). `S1C_WIP.schoenfeld_psi_large_of_Z` type-checks: once
+  `NT_le_Mt_add_RtB` and `Mt_sub_RtB_le_NT` are proven, `NT 14 = 0 → ∀ x ≥ 10^15, |ψ x - x| ≤ ...`
+  is a one-liner from `schoenfeld_psi_large_of_NTB`.
+
+## NEXT-CHUNK plan (chunk 3)
+
+1. **(D) argument bookkeeping (8 to 15 h).** In `S1C_WIP` (move to a delivered `S1D3` when
+   sorry-free): from `exists_riemannZetaS_eq_div_pi` take `θ` continuous on `[0, 2]`, `θ 0 = 0`,
+   `ζ(path t) = ‖ζ(path t)‖ e^{iθ t}`.
+   (a) Vertical segment `t ∈ [0, 1]`: `Re ζ(2 + itT) ≥ 2 - π²/6 > 0` (`re_riemannZeta_two_add_ge`),
+   so `cos (θ t) > 0`; with `θ 0 = 0` and continuity, `θ t ∈ (-π/2, π/2)` (connectedness of
+   `θ '' [0,1]`, `Real.cos_pos_of_mem_Ioo` and its converse).
+   (b) Horizontal segment `t ∈ [1, 2]`, `σ = 2 - 3(t-1)/2 ∈ [1/2, 2]`: the set
+   `Z = {t ∈ [1,2] : Re ζ(σ(t) + iT) = 0}` is finite with `|Z| ≤ card_zeros_gB_le` (map
+   `t ↦ σ(t)` into zeros of `gB T` in `closedBall 2 (3/2)` by `gB_eq_re_of_real`; injective).
+   Between consecutive points of `Z ∪ {1, 2}`, `cos (θ t) ≠ 0`, so `θ` stays in one interval
+   `((k - 1/2)π, (k + 1/2)π)` and `|θ b - θ a| < π`; across a point of `Z` continuity gives the
+   same bound for the closed subintervals. Induction over the sorted finset: `|θ 2 - θ 1| ≤ (|Z| + 1) π`.
+   (c) `|S(T)| = |θ 2|/π ≤ |Z| + 1 + 1/2`. Then `abs_riemannZetaS_le` by the numerics above
+   (`log((8T+48)/m₀) ≤ log T + 3.49`, `1/log(5/4) ≤ 4.4815`, Python-checked).
+2. **(C) the identity (15 to 25 h).** Options, in order of preference: (i) look for the
+   argument principle on rectangles in Tau Ceti (`Analysis/Meromorphic/Counting/Rectangle`,
+   `LFunctions/Zeros/Counting/Basic` has `zeroCountingFunction` for completed L-functions; check
+   whether a `zeroCount = winding/argument` theorem exists and is built); (ii) the port's
+   `ResidueCalcOnRectangles` on `[-1, 2] × [0, T]` with `ξ` or with `ζ` plus the functional
+   equation; the top edge gives `rsTheta` through `TauCeti.logGamma`. Write first the lemma
+   `NT T = (number of zeros of ζ in the rectangle with 0 < Im ≤ T)` from `zerosBandF`.
+3. **(U'), (L') from (C) + (D) (3 to 5 h):** `exists_notOrdinate_between` (finiteness of
+   `zeros_rect_finite`), right-continuity of `NT` (`NT T = NT T'` for `T' ∈ (T, T + ε)`), monotonicity,
+   continuity of `Mt ± RtB`; assemble `schoenfeld_psi_large_of_Z`.
+4. Optional tightening: `x₀ = 10^14` (margin 0.14 √x) by re-tuning `coreB`; radius and
+   centre choices in `S1D2` (e.g. `R = 2 - ε`) lower `a` toward `3.5`; the convexity bound would
+   reach Backlund's `0.137`.
+5. (A) stays with the other agent; the final theorem needs `NT 14 = 0` in the form of S1A's `NT`.

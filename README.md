@@ -2,7 +2,7 @@
 
 > **Proven, with nothing assumed beyond the proven Riemann hypothesis:** for every x ≥ 10¹⁵,
 > |ψ(x) − x| ≤ √x·(log x)²/(8π) and |θ(x) − x| ≤ √x·(log x)²/(8π),
-> Schoenfeld's exact constant, kernel-checked in Lean 4 (`SchoenfeldS1.schoenfeld_psi`, `SchoenfeldS1.schoenfeld_theta`; axioms: `propext`, `Classical.choice`, `Quot.sound`; see `S1-zero-counting/axioms-final_v1.0_11-27-2026.txt`).
+> Schoenfeld's exact constant, kernel-checked in Lean 4. Paper: [Zenodo, DOI 10.5281/zenodo.24606897](https://doi.org/10.5281/zenodo.24606897) (`SchoenfeldS1.schoenfeld_psi`, `SchoenfeldS1.schoenfeld_theta`; axioms: `propext`, `Classical.choice`, `Quot.sound`; see `S1-zero-counting/axioms-final_v1.0_11-27-2026.txt`).
 
 An open project to formalize in Lean 4 **Schoenfeld's explicit prime bounds**, which are now unconditional because the Riemann hypothesis is proven:
 

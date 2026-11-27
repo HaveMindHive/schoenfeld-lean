@@ -16,8 +16,8 @@ Every file is kernel-checked inside the environment of the community Lean proof 
 |---|---|---|
 | **0** | Square-root bounds with an unnamed constant: ψ(x) − x = O(√x·(log x)²), π(x) − Li(x) = O(√x·log x) (von Koch), via a kernel-checked truncated explicit formula | done (see [rh-consequences](https://github.com/HaveMindHive/rh-consequences)) |
 | **F1** | The same with explicit numerals: \|ψ(x) − x\| ≤ C₀·√x·(log x)² for x ≥ X₀ | in progress |
-| **S2** | Schoenfeld's exact ψ and θ forms for x ≥ 10¹¹, from RH plus three explicit zero-count statements (port of goldbach-lean's `psi_schoenfeld_large`) | in progress |
-| **S1** | Prove those zero-count statements: an explicit Riemann–von Mangoldt bound for N(T), and no zero below height 14 | open |
+| **S2** | Schoenfeld's exact ψ and θ forms for x ≥ 10¹¹, from RH plus three explicit zero-count statements (port of goldbach-lean's `psi_schoenfeld_large`) | **done**: `SchoenfeldPort.schoenfeld_psi_large`, `schoenfeld_theta_large` in `S2-schoenfeld-large/` (50 modules, 9,824 lines, RH discharged by `riemannHypothesis`, standard axioms) |
+| **S1** | Prove those zero-count statements (`HSWN70`, `HSWHead14`: N(T) within Mt(T) ± Rt(T), Mt = T/2π·log(T/2πe) + 7/8, Rt = 0.1038 log T + 0.2573 log log T + 10.2425; `Ordinates14`: every zero has \|γ\| ≥ 14). Then S2 holds with no hypotheses | open |
 | **S3** | Lower the analytic start from 10¹¹ | open |
 | **S4** | Certified computation for the remaining small range (down to 73.2 / 599 / 2657) | open |
 | **S5** | θ and π transfers to the exact Schoenfeld forms, with li (not Li, which differs by li(2) ≈ 1.045) | open |

@@ -5,3 +5,22 @@ Checked inside the environment of leanprover-community/riemann-hypothesis (Apach
 whose proof of the Riemann hypothesis is by Levent Alpöge with Claude, condensed by the Lean community.
 Builds on Tau Ceti (Apache-2.0, the Tau Ceti contributors), goldbach-lean by sthubbar (Apache-2.0)
 and PrimeNumberTheoremAnd (Apache-2.0). Ported files keep their original headers.
+SchoenfeldPort
+Local port, 11-27-2026, of the Schoenfeld-shape RH bounds for psi and theta from goldbach-lean
+to Lean v4.37.0-rc1 / Mathlib 31ce06ea, checked against the riemann-hypothesis-community repo.
+
+Ported from GoldbachLean (goldbach-lean), Copyright 2026 Steve Hubbard (sthubbar),
+entry entries/goldbachintervalsrh445, commit 05fe86a, licensed under the Apache License,
+Version 2.0 (see LICENSE). The lab files were written by AI agents under Steve Hubbard's
+direction, as that repository's README and PORTING.md state.
+
+The files under src/SchoenfeldPort/PNTPort/StrongPNT/ contain code from PrimeNumberTheoremAnd,
+https://github.com/AlexKontorovich/PrimeNumberTheoremAnd, commit
+c39a751132c88b6e8080b74c74023fd95b3d8be0, Copyright the PrimeNumberTheoremAnd project
+contributors, licensed under the Apache License, Version 2.0, through the goldbach-lean copies.
+Each such file keeps its notice.
+
+Changes in this port: only the declarations in the dependency closure of psi_schoenfeld_large,
+theta_schoenfeld_large and psi_sub_theta_large are kept; module and namespace prefix LeanLab
+renamed to SchoenfeldPort; Lean module-system headers removed (plain files); fixes for the newer
+Lean and Mathlib as listed in PROGRESS-port_v1.0_11-27-2026.md.

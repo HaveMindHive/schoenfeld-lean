@@ -1,0 +1,45 @@
+SchoenfeldPort.schoenfeld_psi_large : SchoenfeldPort.Dudek2014.SigmaH.HSWN70
+      SchoenfeldPort.PNTPort.ExplicitPsi1.Trivial.gZ ∧
+    SchoenfeldPort.PNTPort.ExplicitPsi1.FirstDiff.HSWHead14 SchoenfeldPort.PNTPort.ExplicitPsi1.Trivial.gZ ∧
+      SchoenfeldPort.ChirreHagen2025.SmoothT2.Ordinates14 SchoenfeldPort.PNTPort.ExplicitPsi1.Trivial.gZ →
+  ∀ x ≥ 10 ^ 11, |Chebyshev.psi x - x| ≤ √x * Real.log x ^ 2 / (8 * Real.pi)
+SchoenfeldPort.schoenfeld_theta_large : SchoenfeldPort.Dudek2014.SigmaH.HSWN70
+      SchoenfeldPort.PNTPort.ExplicitPsi1.Trivial.gZ ∧
+    SchoenfeldPort.PNTPort.ExplicitPsi1.FirstDiff.HSWHead14 SchoenfeldPort.PNTPort.ExplicitPsi1.Trivial.gZ ∧
+      SchoenfeldPort.ChirreHagen2025.SmoothT2.Ordinates14 SchoenfeldPort.PNTPort.ExplicitPsi1.Trivial.gZ →
+  ∀ x ≥ 10 ^ 11, |Chebyshev.theta x - x| ≤ √x * Real.log x ^ 2 / (8 * Real.pi)
+def SchoenfeldPort.PNTPort.ExplicitPsi1.Trivial.gZ : SchoenfeldPort.PNTPort.ExplicitPsi1.Trivial.ZIdx → ℝ :=
+fun i => (↑i.fst).im
+@[reducible] def SchoenfeldPort.PNTPort.ExplicitPsi1.Trivial.ZIdx : Type :=
+(ρ : ↑SchoenfeldPort.PNTPort.ExplicitPsi1.Zall) × Fin (analyticOrderNatAt riemannZeta ↑ρ)
+def SchoenfeldPort.Dudek2014.SigmaH.HSWN70.{u_1} : {ι : Type u_1} → (ι → ℝ) → Prop :=
+fun {ι} γ =>
+  (∀ (T : ℝ),
+      70 ≤ T →
+        ∀ (s : Finset ι),
+          ↑{i ∈ s | |γ i| ≤ T}.card ≤
+            2 * (SchoenfeldPort.ChirreHagen2025.Lemma26H.Mt T + SchoenfeldPort.ChirreHagen2025.Lemma26H.Rt T)) ∧
+    ∀ (T t : ℝ),
+      70 ≤ T →
+        T ≤ t →
+          ∀ (s : Finset ι),
+            ↑{i ∈ s | T < |γ i| ∧ |γ i| ≤ t}.card ≤
+              2 *
+                (SchoenfeldPort.ChirreHagen2025.Lemma26H.Mt t + SchoenfeldPort.ChirreHagen2025.Lemma26H.Rt t -
+                  (SchoenfeldPort.ChirreHagen2025.Lemma26H.Mt T - SchoenfeldPort.ChirreHagen2025.Lemma26H.Rt T))
+def SchoenfeldPort.PNTPort.ExplicitPsi1.FirstDiff.HSWHead14.{u_1} : {ι : Type u_1} → (ι → ℝ) → Prop :=
+fun {ι} γ =>
+  ∀ (T : ℝ),
+    14 ≤ T →
+      ∀ (s : Finset ι),
+        ↑{i ∈ s | |γ i| ≤ T}.card ≤
+          2 * (SchoenfeldPort.ChirreHagen2025.Lemma26H.Mt T + SchoenfeldPort.ChirreHagen2025.Lemma26H.Rt T)
+def SchoenfeldPort.ChirreHagen2025.SmoothT2.Ordinates14.{u_1} : {ι : Type u_1} → (ι → ℝ) → Prop :=
+fun {ι} γ => ∀ (i : ι), 14 ≤ |γ i|
+def SchoenfeldPort.ChirreHagen2025.Lemma26H.Mt : ℝ → ℝ :=
+fun T => T / (2 * Real.pi) * Real.log (T / (2 * Real.pi * Real.exp 1)) + 7 / 8
+def SchoenfeldPort.ChirreHagen2025.Lemma26H.Rt : ℝ → ℝ :=
+fun T => 0.1038 * Real.log T + 0.2573 * Real.log (Real.log T) + 10.2425
+'SchoenfeldPort.schoenfeld_psi_large' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SchoenfeldPort.schoenfeld_theta_large' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SchoenfeldPort.psi_sub_theta_large' depends on axioms: [propext, Classical.choice, Quot.sound]

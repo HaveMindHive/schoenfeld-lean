@@ -32,7 +32,7 @@ Every file is kernel-checked inside the environment of the community Lean proof 
 
 ## Where it stands
 
-- **Done and kernel-checked:** von Koch's square-root bounds (stage 0); the first fully explicit bounds from the proven RH, |ψ(x) − x| ≤ 21250000000·√x·(log x)² and |π(x) − Li(x)| ≤ 913750000391·√x·log x for every x ≥ 55 (F1); and **Schoenfeld's exact constant 1/(8π) for ψ and θ for every x ≥ 10¹¹**, from the proven RH plus three explicit statements about the zeros of ζ (S2).
+- **Done and kernel-checked:** von Koch's square-root bounds (stage 0); fully explicit bounds from the proven RH, |ψ(x) − x| ≤ 21250000000·√x·(log x)² and |π(x) − Li(x)| ≤ 913750000391·√x·log x for every x ≥ 55 (F1); and **Schoenfeld's exact constant 1/(8π) for ψ and θ for every x ≥ 10¹¹**, from the proven RH plus three explicit statements about the zeros of ζ (S2).
 - **Done (S1):** the three zero statements, so Schoenfeld's ψ and θ bounds hold for every x ≥ 10¹⁵ from the proven RH alone.
 - **Next:** bring the start down toward 73.2 / 599 (S3, S4), the π form with li (S5), and Ramanujan's inequality (S6). Help is welcome (see the issues).
 
@@ -43,6 +43,10 @@ You need a built clone of `leanprover-community/riemann-hypothesis` (tested at c
 ## Berry-Keating count (11-27-2026)
 
 `S1-zero-counting/BerryKeating_v1.0_11-27-2026.lean`: for every T ≥ 14, |N(T) − ((T/2π) log(T/2π) − T/2π + 7/8)| ≤ 4.5 log T + 17.1 (`berry_keating_count`), the smooth count of Berry and Keating's xp model, 7/8 term included. Plus the level density between T and T + 1 (`berry_keating_density`). Axioms: propext, Classical.choice, Quot.sound.
+
+## Related work
+
+[senamakel/conjectures-lean](https://github.com/senamakel/conjectures-lean/tree/main/conjectures/schoenfeld-rh) (created 2026-11-26) proves Schoenfeld's bounds at his original thresholds (ψ from 73.2, θ from 599, π − li from 2657), using 24 `native_decide` calls for its numerical certificates, plus a version with larger constants (1/8, 1/4, 9/20) that needs no computation. This repository's results use no `native_decide`: every step, including the zero-free certificate below height 14, is checked by the Lean kernel, with axioms propext, Classical.choice and Quot.sound only. The price is the starting point x ≥ 10¹⁵.
 
 ## Cite
 

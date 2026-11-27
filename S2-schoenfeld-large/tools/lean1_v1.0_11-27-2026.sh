@@ -1,3 +1,11 @@
 #!/bin/sh
-# Check one Lean file against the built RH repo and the ported oleans in build/.
-LEAN_PATH="/Users/paymore/HaveMindHive/schoenfeld-port_v1.0_11-27-2026/build:/Users/paymore/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/riemann-hypothesis-community_v1.0_11-27-2026/repo/.lake/build/lib/lean:/Users/paymore/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/riemann-hypothesis-community_v1.0_11-27-2026/repo/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/paymore/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/riemann-hypothesis-community_v1.0_11-27-2026/repo/.lake/packages/Qq/.lake/build/lib/lean:/Users/paymore/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/riemann-hypothesis-community_v1.0_11-27-2026/repo/.lake/packages/TauCeti/.lake/build/lib/lean:/Users/paymore/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/riemann-hypothesis-community_v1.0_11-27-2026/repo/.lake/packages/aesop/.lake/build/lib/lean:/Users/paymore/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/riemann-hypothesis-community_v1.0_11-27-2026/repo/.lake/packages/batteries/.lake/build/lib/lean:/Users/paymore/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/riemann-hypothesis-community_v1.0_11-27-2026/repo/.lake/packages/importGraph/.lake/build/lib/lean:/Users/paymore/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/riemann-hypothesis-community_v1.0_11-27-2026/repo/.lake/packages/mathlib/.lake/build/lib/lean:/Users/paymore/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/riemann-hypothesis-community_v1.0_11-27-2026/repo/.lake/packages/plausible/.lake/build/lib/lean:/Users/paymore/Library/CloudStorage/OneDrive-rkfleming/HaveMindHive/riemann-hypothesis-community_v1.0_11-27-2026/repo/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/paymore/.elan/toolchains/leanprover--lean4---v4.37.0-rc1/lib/lean" exec /Users/paymore/.elan/toolchains/leanprover--lean4---v4.37.0-rc1/bin/lean -j2 --tstack=400000 "$@"
+# Check one Lean file against the ported oleans in build/ and a built clone of
+# leanprover-community/riemann-hypothesis (Lean v4.37.0-rc1).
+# Usage: RH_REPO=/path/to/riemann-hypothesis sh tools/lean1_v1.0_11-27-2026.sh File.lean
+HERE="$(cd "$(dirname "$0")/.." && pwd)"
+RH="${RH_REPO:?set RH_REPO to a built riemann-hypothesis clone}"
+TOOLCHAIN="${LEAN_TOOLCHAIN_DIR:-$HOME/.elan/toolchains/leanprover--lean4---v4.37.0-rc1}"
+LP="$HERE/build:$RH/.lake/build/lib/lean"
+for p in "$RH"/.lake/packages/*/.lake/build/lib/lean; do LP="$LP:$p"; done
+LP="$LP:$TOOLCHAIN/lib/lean"
+LEAN_PATH="$LP" exec "$TOOLCHAIN/bin/lean" -j2 --tstack=400000 "$@"

@@ -1,6 +1,6 @@
 # schoenfeld-lean
 
-A Lean 4 formalization of **Schoenfeld's explicit prime bounds**, now unconditional because the Riemann hypothesis is proven:
+An open project to formalize in Lean 4 **Schoenfeld's explicit prime bounds**, which are now unconditional because the Riemann hypothesis is proven:
 
 - |ψ(x) − x| < √x·(log x)² / (8π) for x ≥ 73.2
 - |θ(x) − x| < √x·(log x)² / (8π) for x ≥ 599
@@ -21,6 +21,15 @@ Every file is kernel-checked inside the environment of the community Lean proof 
 | **S3** | Lower the analytic start from 10¹¹ | open |
 | **S4** | Certified computation for the remaining small range (down to 73.2 / 599 / 2657) | open |
 | **S5** | θ and π transfers to the exact Schoenfeld forms, with li (not Li, which differs by li(2) ≈ 1.045) | open |
+
+## Where it stands
+
+- **Done and kernel-checked:** von Koch's square-root bounds (stage 0); the first fully explicit bounds from the proven RH, |ψ(x) − x| ≤ 21250000000·√x·(log x)² and |π(x) − Li(x)| ≤ 913750000391·√x·log x for every x ≥ 55 (F1); and **Schoenfeld's exact constant 1/(8π) for ψ and θ for every x ≥ 10¹¹**, from the proven RH plus three explicit statements about the zeros of ζ (S2).
+- **Next:** S1, proving those three zero statements (an explicit Riemann–von Mangoldt count and no zero below height 14). It is in progress; help is welcome (see the issues).
+
+## Check it
+
+You need a built clone of `leanprover-community/riemann-hypothesis` (tested at commit `8c828ed`, Lean v4.37.0-rc1). F1: `F1-explicit/check-explicit_v1.0_11-27-2026.sh` (see its header). S2: build the ported modules with the scripts in `S2-schoenfeld-large/tools/`, then `RH_REPO=/path/to/riemann-hypothesis sh S2-schoenfeld-large/tools/lean1_v1.0_11-27-2026.sh S2-schoenfeld-large/src/SchoenfeldPort/Final.lean`. Every main theorem ends with `#print axioms`; expect `[propext, Classical.choice, Quot.sound]`.
 
 ## Credits and licence
 

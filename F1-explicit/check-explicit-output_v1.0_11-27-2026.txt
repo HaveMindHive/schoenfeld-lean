@@ -1,0 +1,14 @@
+'WallsMeetRHExplicit.norm_LFunctionTrivChar₁_one_le_pow_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'WallsMeetRHExplicit.count_zeros_disc_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'WallsMeetRHExplicit.logDeriv_window_explicit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'WallsMeetRHExplicit.logDeriv_bound_explicit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'WallsMeetRHExplicit.exists_explicit_bump' depends on axioms: [propext, Classical.choice, Quot.sound]
+'WallsMeetRHExplicit.riemannZeta_safe_height_of' depends on axioms: [propext, Classical.choice, Quot.sound]
+'WallsMeetRHExplicit.sum_order_div_norm_le_of' depends on axioms: [propext, Classical.choice, Quot.sound]
+'WallsMeetRHExplicit.psi_sub_le_explicit_aux' depends on axioms: [propext, Classical.choice, Quot.sound]
+'WallsMeetRHExplicit.psi_sub_le_explicit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'WallsMeetRHExplicit.theta_sub_le_explicit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'WallsMeetRHExplicit.primeCounting_sub_logIntegral_le_explicit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'WallsMeetRHExplicit.walls_meet_rh_explicit' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -21,6 +21,7 @@ Every file is kernel-checked inside the environment of the community Lean proof 
 | **S3** | Lower the analytic start from 10¹¹ | open |
 | **S4** | Certified computation for the remaining small range (down to 73.2 / 599 / 2657) | open |
 | **S5** | θ and π transfers to the exact Schoenfeld forms, with li (not Li, which differs by li(2) ≈ 1.045) | open |
+| **S6** | **Ramanujan's inequality**, π(x)² < (e·x/ln x)·π(x/e), for every x > 38,358,837,682: known under RH (Dudek–Platt), so a theorem now that RH is proven. Uses the explicit π bounds above plus computation for the middle range | open (flagship application) |
 
 ## Where it stands
 
